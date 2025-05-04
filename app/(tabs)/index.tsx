@@ -24,6 +24,8 @@ export default function Index() {
   const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(undefined);
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
+  const [emojiStickers, setEmojiStickers] = useState<ImageSource[]>([]);
+
 
   if (status === null) {
     requestPermission();
@@ -37,8 +39,8 @@ export default function Index() {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri); // Set the selected image
-      setShowAppOptions(true); // Show app options after selecting
+      setSelectedImage(result.assets[0].uri);
+      setShowAppOptions(true);
     } else {
       alert('You did not select any image.');
     }
@@ -54,6 +56,10 @@ export default function Index() {
 
   const onModalClose = () => {
     setIsModalVisible(false);
+    if (pickedEmoji) {
+      setEmojiStickers(prev => [...prev, pickedEmoji]);
+      setPickedEmoji(undefined);
+    }
   };
 
   const onSaveImageAsync = async () => {
@@ -94,7 +100,13 @@ export default function Index() {
       <View style={styles.imageContainer}>
         <View ref={imageRef} collapsable={false}>
           <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
-          {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
+          {emojiStickers.map((emoji, index) => (
+            <EmojiSticker key={index} imageSize={40} stickerSource={emoji} onDelete={() => {
+              setEmojiStickers(current => current.filter((_, i) => i !== index));
+              }
+            }
+  />
+))}
         </View>
       </View>
       {showAppOptions ? (
@@ -112,7 +124,12 @@ export default function Index() {
         </View>
       )}
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
-        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
+      <EmojiList onSelect={(emoji) => {
+        setEmojiStickers(prev => [...prev, emoji]);
+        setIsModalVisible(false);
+        }}
+  onCloseModal={() => setIsModalVisible(false)}
+/>
       </EmojiPicker>
     </GestureHandlerRootView>
   );
