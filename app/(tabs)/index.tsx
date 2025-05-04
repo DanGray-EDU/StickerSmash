@@ -1,19 +1,19 @@
-import { View, StyleSheet, Platform } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { useState, useRef } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as MediaLibrary from 'expo-media-library';
-import { type ImageSource } from 'expo-image';
-import { captureRef } from 'react-native-view-shot';
 import domtoimage from 'dom-to-image';
+import { type ImageSource } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
+import { useRef, useState } from 'react';
+import { Platform, StyleSheet, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { captureRef } from 'react-native-view-shot';
 
 import Button from '@/components/Button';
-import ImageViewer from '@/components/ImageViewer';
-import IconButton from '@/components/IconButton';
 import CircleButton from '@/components/CircleButton';
-import EmojiPicker from '@/components/EmojiPicker';
 import EmojiList from '@/components/EmojiList';
+import EmojiPicker from '@/components/EmojiPicker';
 import EmojiSticker from '@/components/EmojiSticker';
+import IconButton from '@/components/IconButton';
+import ImageViewer from '@/components/ImageViewer';
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
 
@@ -37,8 +37,8 @@ export default function Index() {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
-      setShowAppOptions(true);
+      setSelectedImage(result.assets[0].uri); // Set the selected image
+      setShowAppOptions(true); // Show app options after selecting
     } else {
       alert('You did not select any image.');
     }
